@@ -1,0 +1,16 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: netflix-eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    hostname: localhost
+logging:
+  level:
+    com.netflix: warn

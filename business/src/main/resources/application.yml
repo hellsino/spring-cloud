@@ -1,0 +1,113 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: business
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ue5?serverTimezone=Asia/Shanghai
+    username: root
+  #  password: 123456
+    password: ENC(uDDUhTu/qgcBFjWnF0BE7A==)
+    pool-size: 1
+    key-obtention-iterations: 1000
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    string-output-type: base64
+  #    mvc:
+  #      static-path-pattern: /**
+  #    web:
+  #      resources:
+  #        static-locations: classpath:/static/img1,classpath:/static/img2
+  #  redis:
+  #    host: 127.0.0.1
+  #    port: 6379
+  #    password:
+  #    connect-timeout: 3000 #连接超时时间（毫秒）
+  #    database: 0 #指定redis的分库（共16个0到15）
+  #    jedis:
+  #      pool:
+  #        max-active: 20 #连接池最大连接数（使用负值表示没有限制）
+  #        max-wait: -1 #连接池最大阻塞等待时间（使用负值表示没有限制）
+  #        max-idle: 10 #连接池中的最大空闲连接
+  #        min-idle: 0 #连接池中的最小空闲连接
+  #缓存服务器
+  #  redis:
+  #    #host: 192.168.200.128
+  #    host: 127.0.0.1
+  #    port: 6379
+  #    password:
+  #    connect-timeout: 3000 #连接超时时间（毫秒）
+  #    database: 0 #指定redis的分库（共16个0到15）
+  #    cluster:
+  #      #nodes: 192.168.200.128:6379,192.168.200.128:6380,192.168.200.128:6381
+  #      nodes: 127.0.0.1:6379
+  #      max-redirects: 5
+  #    com.com.domain.client-type: jedis
+  #    jedis:
+  #      pool:
+  #      max-active: 500 #连接池最大连接数（使用负值表示没有限制）
+  #      max-wait: -1 #连接池最大阻塞等待时间（使用负值表示没有限制）
+  #      max-idle: 500 #连接池中的最大空闲连接
+  #      min-idle: 10 #连接池中的最小空闲连接
+  #    lettuce:
+  #      pool:
+  #        max-active: 500
+  #        max-wait: -1
+  #        max-idle: 500
+  #        min-idle: 10
+  #i18n国际化支持
+  #  messages:
+  #    always-use-message-format: false
+  #    basename: i18n/messages
+  #    cache-duration: 3600
+  #    encoding: UTF-8
+  #    fallback-to-system-locale: false
+  #热部署配置
+#  devtools:
+#    restart:
+#      enabled: true
+#      exclude: resources/**,static/**,public/**,templates/**
+#  servlet:
+#    multipart:
+#      max-file-size: 1GB
+#      max-request-size: 1GB
+#数据库加密
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    #加密秘钥
+    password: custom-salt
+    #linux环境变量
+    #password: ${JASYPT_ENCRYPTOR_PASSWORD:}
+mybatis-plus:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-handlers-package: com.domain.config
+  type-aliases-package: com.domain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    cache-enabled: true #开启缓存
+    lazy-loading-enabled: true #开启延迟加载
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+logging:
+  level:
+    root: info
+    com.netflix: warn
+random:
+  data:
+    id: ${random.int}
+    username: ${random.value}
+    password: ${random.uuid}
+    code: ${random.int(10)}
+    type: ${random.int!5,10!}
+    time: ${random.long}

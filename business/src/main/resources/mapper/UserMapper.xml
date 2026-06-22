@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.domain.mapper.UserMapper">
+
+    <select id="selectLinkedHashMap" resultType="java.util.LinkedHashMap">
+        select * from user;
+    </select>
+
+    <!--oracle数据库分页查询语句-->
+    <select id="oraclePage" resultType="java.util.LinkedHashMap">
+        select WO_ID,WO_NO,FROM_DATE,TO_DATE,FLINENO,WO_QTY,BOM_ID,ROWNUM RN from (
+            select IERP_WO_MASTER.WO_ID,IERP_WO_MASTER.WO_NO,IERP_WO_MASTER.FROM_DATE,IERP_WO_MASTER.TO_DATE,T_WORKLINE.FLINENO,IERP_WO_MASTER.WO_QTY,IERP_WO_MASTER.BOM_ID,ROWNUM RN
+            from IERP_WO_MASTER left join T_WORKLINE on IERP_WO_MASTER.WO_NO = T_WORKLINE.FWORKNO where IERP_WO_MASTER.STATUS in ('O') and ROWNUM <![CDATA[<=]]> (#{pageNum} * #{pageSize})
+        ) v where RN > ((#{pageNum} - 1) * #{pageSize})
+    </select>
+</mapper>

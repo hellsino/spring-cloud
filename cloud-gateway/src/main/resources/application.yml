@@ -1,0 +1,70 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: business-route #路由标识，必须唯一
+          uri: lb://business #路由的目标地址
+          predicates:
+            - Path=/business/** #路由断言，判断路径是否以/business开头,如果是则符合规则
+            - After=2020-01-01T08:30:59.123-08:00[Asia/Shanghai]
+          filters:
+            - StripPrefix=1 #去掉 /business
+            #- AddRequestHeader=Truth,Java is freaking awesome!
+        - id: cloud-openfeign-route
+          uri: lb://cloud-openfeign
+          predicates:
+            - Path=/cloud-openfeign/**
+            - After=2020-01-01T08:30:59.123-08:00[Asia/Shanghai]
+          filters:
+            - StripPrefix=1
+        - id: xxx
+          uri: lb://xxx
+          predicates:
+            - Path=/xxx/**
+      default-filters:
+        - AddRequestHeader=Truth,Java is freaking awesome!
+      globalcors: #全局的跨域处理
+        add-to-simple-url-handler-mapping: true #解决options请求被拦截问题
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: #允许哪些网站的跨域请求
+              - "http://localhost:63342" #[63342]这是IDEA默认端口,http://localhost:63342/cloud-mes/cloud-gateway/index.html
+            allowedMethods: #允许的跨域ajax的请求方式
+              - "GET"
+              - "POST"
+              - "DELETE"
+              - "PUT"
+              - "OPTIONS"
+            allowedHeaders: "*" #允许在请求中携带的头信息
+            allowCredentials: true #是否允许携带cookie
+            maxAge: 360000 #这次跨域检测的有效期
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+#  浏览器
+#  ↓
+#  http://localhost:8888/business/user/list【http://localhost:8080/user/list】
+#  ↓
+#  Gateway
+#  ↓（负载均衡）
+#  Eureka
+#  ↓
+#  business 服务
+
+
+#  浏览器
+#  ↓
+#  Spring Cloud Gateway
+#  ↓
+#  Feign 调用
+#  ↓
+#  目标服务（127.0.0.1:8088）
+
+#  http://localhost:8088/cloud-openfeign/feign
+#  http://localhost:8888/cloud-openfeign/cloud-openfeign/feign

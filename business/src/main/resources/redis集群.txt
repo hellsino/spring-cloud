@@ -1,0 +1,88 @@
+#拉取镜像
+docker pull redis:5.0.2
+
+#创建容器
+docker create --name redis-node01 -v /data/redis-data/node01:/data -p 6379:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-01.conf
+
+docker create --name redis-node02 -v /data/redis-data/node02:/data -p 6380:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-02.conf
+
+docker create --name redis-node03 -v /data/redis-data/node03:/data -p 6381:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-03.conf
+
+#启动容器
+docker start redis-node01 redis-node02 redis-node03
+
+#开始组建集群
+
+#进入redis-node01进行操作
+docker exec -it redis-node01 /bin/bash
+
+#组建集群
+redis-cli --cluster create 172.17.0.1:6379 172.17.0.1:6380 172.17.0.1:6381 --cluster-replicas 0
+
+
+测试发现都可以连接上，但是集群无法配置成功，存在一些问题
+docker exec -it redis-node01 /bin/bash
+redis-cli -h 172.17.0.1 -p 6379
+redis-cli -h 172.17.0.1 -p 6380
+redis-cli -h 172.17.0.1 -p 6381
+
+#退出
+exit
+
+#删除容器
+docker stop redis-node01 redis-node02 redis-node03
+docker rm redis-node01 redis-node02 redis-node03
+rm -rf /data/redis-data
+
+#创建容器
+docker create --name redis-node01 -v /data/redis-data/node01:/data -p 6379:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-01.conf
+
+docker create --name redis-node02 -v /data/redis-data/node02:/data -p 6380:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-02.conf
+
+docker create --name redis-node03 -v /data/redis-data/node03:/data -p 6381:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-03.conf
+
+#启动容器
+docker start redis-node01 redis-node02 redis-node03
+
+#查看容器的ip地址
+docker inspect redis-node01
+docker inspect redis-node02
+docker inspect redis-node03
+
+#进入redis-node01进行操作
+docker exec -it redis-node01 /bin/bash
+
+#组建集群(注意端口的变化)
+redis-cli --cluster create 172.17.0.2:6379 172.17.0.3:6379 172.17.0.4:6379 --cluster-replicas 0
+
+#跟随redis重定向
+redis-cli -c
+CLUSTER NODES
+
+可以看到，集群中节点的ip地址是docker分配的地址，那么在客户端（spring-data-redis）是没有办法访问的？如何解决？
+
+#退出
+exit
+
+#删除容器
+docker stop redis-node01 redis-node02 redis-node03
+docker rm redis-node01 redis-node02 redis-node03
+rm -fr /data/redis-data
+
+#创建容器
+docker create --name redis-node01 --net host -v /data/redis-data/node01:/data redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-01.conf --port 6379
+docker create --name redis-node02 --net host -v /data/redis-data/node02:/data redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-02.conf --port 6380
+docker create --name redis-node03 --net host -v /data/redis-data/node03:/data redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-03.conf --port 6381
+
+#启动容器
+docker start redis-node01 redis-node02 redis-node03
+
+#进入redis-node01容器进行操作
+docker exec -it redis-node01 /bin/bash
+
+#192.168.200.151是主机的ip地址
+redis-cli --cluster create 192.168.200.128:6379 192.168.200.128:6380 192.168.200.128:6381 --cluster-replicas 0
+
+#最终验证
+redis-cli
+CLUSTER NODES
