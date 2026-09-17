@@ -34,6 +34,11 @@ public class BusinessApplicationTests {
 
     @Test
     void contextLoads() {
+        byte[] buffer = new byte[1024 * 1024 * 1024]; // 1GB
+    }
+
+    @Test
+    void selectLinkedHashMap() {
         List<LinkedHashMap> linkedHashMap = userMapper.selectLinkedHashMap();
         System.out.println(linkedHashMap.get(0).get("id"));
         System.out.println(linkedHashMap.get(0).get("username"));

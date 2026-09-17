@@ -32,7 +32,7 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins: #允许哪些网站的跨域请求
-              - "http://localhost:63342" #[63342]这是IDEA默认端口,http://localhost:63342/cloud-mes/cloud-gateway/index.html
+              - "http://localhost:63342" #[63342]这是IDEA默认端口,http://localhost:63342/spring-cloud/cloud-gateway/index.html
             allowedMethods: #允许的跨域ajax的请求方式
               - "GET"
               - "POST"
