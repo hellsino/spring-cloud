@@ -42,6 +42,27 @@ create table user(
     delete_time     datetime                            comment '删除时间'
 ) comment = '用户表';
 
+insert into user (id, username, nickname, password, phone, email, avatar, status, del_flag, login_ip, login_date, name, gender, age, birthday, height, weight, marriage, home_city, live_city, introduce, company, job, school, education, salary, house, car, remark, create_time, update_time) values (1, '王志新', 'hellsino', '123456', '15150205080', 'hellsino@163.com', null, '1', '0', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+drop table if exists role;
+create table role (
+    id         bigint primary key auto_increment,
+    role_name       varchar(50) not null unique,
+    description     varchar(255)
+);
+
+insert into role (id, role_name, description) values (1, 'admin', '系统管理员');
+insert into role (id, role_name, description) values (2, 'user', '普通用户');
+insert into role (id, role_name, description) values (3, 'vip', 'vip用户');
+
+
+create table user_role (
+    user_id         bigint not null,
+    role_id         bigint not null,
+    primary key (user_id, role_id),
+    constraint fk_ur_user foreign key (user_id) references user(id),
+    constraint fk_ur_role foreign key (role_id) references role(id)
+);
 
 drop table if exists dict_type;
 create table dict_type
