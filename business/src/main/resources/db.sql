@@ -1,5 +1,4 @@
-# select 1 from dual;
-select * from user;
+select 1 from dual;
 
 drop table if exists user;
 create table user(
@@ -39,7 +38,8 @@ create table user(
 # 更多信息
     remark          varchar(100)                        comment '备注',
     create_time     datetime                            comment '创建时间',
-    update_time     datetime                            comment '更新时间'
+    update_time     datetime                            comment '更新时间',
+    delete_time     datetime                            comment '删除时间'
 ) comment = '用户表';
 
 
@@ -110,11 +110,3 @@ insert into dict_item (id, code, seq, name, create_time, update_time) values (nu
 insert into dict_item (id, code, seq, name, create_time, update_time) values (null, 'salary', 8, '100w以上', '2020-01-01 00:00:00', null);
 
 
-
-
-select * from user;
-select * from dict_type;
-select * from dict_item;
-select * from dict_item ORDER BY RAND() LIMIT 1;
-
-select * from dict_type left join dict_item on dict_type.code = dict_item.code where dict_type.name = ''
