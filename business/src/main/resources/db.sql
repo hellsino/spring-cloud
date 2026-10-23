@@ -46,7 +46,7 @@ insert into user (id, username, nickname, password, phone, email, avatar, status
 
 drop table if exists role;
 create table role (
-    id         bigint primary key auto_increment,
+    id              int primary key auto_increment,
     role_name       varchar(50) not null unique,
     description     varchar(255)
 );
@@ -57,8 +57,8 @@ insert into role (id, role_name, description) values (3, 'vip', 'vip用户');
 
 
 create table user_role (
-    user_id         bigint not null,
-    role_id         bigint not null,
+    user_id         int not null,
+    role_id         int not null,
     primary key (user_id, role_id),
     constraint fk_ur_user foreign key (user_id) references user(id),
     constraint fk_ur_role foreign key (role_id) references role(id)
